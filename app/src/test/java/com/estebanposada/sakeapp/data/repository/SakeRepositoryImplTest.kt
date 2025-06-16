@@ -2,9 +2,9 @@ package com.estebanposada.sakeapp.data.repository
 
 import com.estebanposada.sakeapp.data.data_source.SakeDao
 import com.estebanposada.sakeapp.domain.model.sakes
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -31,7 +31,7 @@ class SakeRepositoryImplTest {
         val result = repository.getSakeItems().first()
 
         // Then
-        assertEquals(expectedSakeItems, result)
+        assertThat(result).isEqualTo(expectedSakeItems)
     }
 
     @Test
@@ -45,6 +45,6 @@ class SakeRepositoryImplTest {
         val result = repository.getSakeById(id)
 
         // Then
-        assertEquals(expectedSakeItem, result)
+        assertThat(result).isEqualTo(expectedSakeItem)
     }
 }

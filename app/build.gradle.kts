@@ -18,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.estebanposada.sakeapp.HiltTestRunner"
     }
 
     buildTypes {
@@ -72,4 +72,10 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt)
     ksp(libs.hilt.compiler)
+
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+    testImplementation(libs.truth)
 }

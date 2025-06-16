@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.room.Room
 import com.estebanposada.sakeapp.data.data_source.SakeDao
 import com.estebanposada.sakeapp.data.data_source.SakeDatabase
-import com.estebanposada.sakeapp.data.data_source.SakeDatabaseCallback
 import com.estebanposada.sakeapp.data.repository.SakeRepositoryImpl
 import com.estebanposada.sakeapp.domain.repository.SakeRepository
 import com.estebanposada.sakeapp.domain.use_case.GetSakeByIdUseCase
@@ -20,13 +19,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object TestAppModule {
 
     @Provides
     @Singleton
     fun provideDatabase(app: Application, dataProvider: Provider<SakeDao>) =
-        Room.databaseBuilder(app, SakeDatabase::class.java, SakeDatabase.DATABASE_NAME)
-            .addCallback(SakeDatabaseCallback(app, dataProvider)).build()
+        Room.inMemoryDatabaseBuilder(app, SakeDatabase::class.java).build()
 
     @Provides
     @Singleton
@@ -39,6 +37,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGetSakeItemsUseCase(repository: SakeRepository) = GetSakeItemsUseCase(repository)
+
     @Provides
     @Singleton
     fun provideGetSakeByIdUseCase(repository: SakeRepository) = GetSakeByIdUseCase(repository)

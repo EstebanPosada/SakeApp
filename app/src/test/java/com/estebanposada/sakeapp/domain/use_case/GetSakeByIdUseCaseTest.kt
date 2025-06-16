@@ -2,9 +2,9 @@ package com.estebanposada.sakeapp.domain.use_case
 
 import com.estebanposada.sakeapp.domain.model.sakes
 import com.estebanposada.sakeapp.domain.repository.SakeRepository
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
-import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -30,6 +30,6 @@ class GetSakeByIdUseCaseTest {
         val result = getSakeByIdUseCase(id)
 
         // Then
-        assertEquals(someSake, result)
+        assertThat(result).isEqualTo(someSake)
     }
 }

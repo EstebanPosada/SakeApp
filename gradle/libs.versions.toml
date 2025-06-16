@@ -16,6 +16,7 @@ hiltNavigation = "1.2.0"
 serialization = "1.9.23"
 coil = "2.4.0"
 mockk = "1.13.10"
+truth = "1.4.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,8 +40,10 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-hilt = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigation" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

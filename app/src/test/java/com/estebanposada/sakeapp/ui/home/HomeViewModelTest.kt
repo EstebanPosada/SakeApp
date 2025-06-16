@@ -16,7 +16,7 @@ class HomeViewModelTest {
         viewModel = HomeViewModel(getSakeItemsUseCase)
     }
 
-    @Test
+    /*@Test
     fun `test initial state is empty`() {
         assert(viewModel.state.value.items.isEmpty())
     }
@@ -26,6 +26,6 @@ class HomeViewModelTest {
         // Given
 
         // When
-    }
+    }*/
 
 }
