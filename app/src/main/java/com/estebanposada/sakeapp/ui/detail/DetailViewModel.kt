@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.estebanposada.sakeapp.domain.use_case.GetSakeByIdUseCase
+import com.estebanposada.sakeapp.ui.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,8 +20,8 @@ class DetailViewModel @Inject constructor(
     var state: State<DetailState> = _state
 
     init {
-        savedStateHandle.get<Int>("id")?.let { sakeId ->
-            if (sakeId != -1) {
+        savedStateHandle.get<Int>(Constants.ID)?.let { sakeId ->
+            if (sakeId != Constants.NO_ID) {
                 viewModelScope.launch {
                     getSakeById(sakeId)
                 }
@@ -34,5 +35,9 @@ class DetailViewModel @Inject constructor(
                 _state.value = state.value.copy(sake = sake)
             }
         }
+    }
+
+    fun setError(message: String) {
+        _state.value = state.value.copy(error = message)
     }
 }

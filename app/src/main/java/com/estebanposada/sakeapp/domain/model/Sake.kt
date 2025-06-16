@@ -43,5 +43,3 @@ val sakes = listOf(
         website = "https://sake2.example.com"
     )
 )
-
-class InvalidItemException(message: String) : Exception(message)

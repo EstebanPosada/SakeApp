@@ -89,4 +89,30 @@ class DetailViewModelTest {
         viewModel = DetailViewModel(getSakeByIdUseCase, savedStateHandle)
         assertThat(viewModel.state.value.sake).isNull()
     }
+
+    @Test
+    fun `setError should update error in state`() {
+        val savedStateHandle = mockk<SavedStateHandle> {
+            every { get<Int>("id") } returns null
+        }
+        viewModel = DetailViewModel(getSakeByIdUseCase, savedStateHandle)
+
+        val errorMessage = "Error"
+        viewModel.setError(errorMessage)
+
+        assertThat(viewModel.state.value.error).isEqualTo(errorMessage)
+    }
+
+    @Test
+    fun `setError should overwrite previous error`() {
+        val savedStateHandle = mockk<SavedStateHandle> {
+            every { get<Int>("id") } returns null
+        }
+        viewModel = DetailViewModel(getSakeByIdUseCase, savedStateHandle)
+
+        viewModel.setError("First")
+        viewModel.setError("Second")
+
+        assertThat(viewModel.state.value.error).isEqualTo("Second")
+    }
 }
