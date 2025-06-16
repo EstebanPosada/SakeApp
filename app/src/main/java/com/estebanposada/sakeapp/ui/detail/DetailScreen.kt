@@ -5,8 +5,6 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
 import com.estebanposada.sakeapp.domain.model.Sake
+import com.estebanposada.sakeapp.ui.Constants
 import com.estebanposada.sakeapp.ui.detail.components.RatingStars
 
 @Composable
@@ -48,7 +47,7 @@ fun DetailScreen(
     ) {
         Image(
             painter = rememberAsyncImagePainter(
-                model = state.sake.picture,
+                model = state.sake?.picture,
                 onError = { error ->
                     Log.e("Coil", "Error loading image: ${error.result.throwable.message}")
                 }),
@@ -62,21 +61,21 @@ fun DetailScreen(
         )
         Spacer(modifier = modifier.height(16.dp))
         Text(
-            text = state.sake.name,
+            text = state.sake?.name ?: Constants.EMPTY,
             style = MaterialTheme.typography.headlineLarge,
             modifier = modifier.align(Alignment.CenterHorizontally)
         )
         Spacer(modifier = modifier.height(8.dp))
         Text(
-            text = state.sake.description,
+            text = state.sake?.description ?: Constants.EMPTY,
             style = MaterialTheme.typography.bodyMedium,
             modifier = modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = modifier.height(16.dp))
-        RatingStars(rating = state.sake.rating)
+        RatingStars(rating = state.sake?.rating ?: 0f)
         Spacer(modifier = modifier.height(16.dp))
         Text(
-            text = state.sake.address,
+            text = state.sake?.address ?: Constants.EMPTY,
             style = MaterialTheme.typography.bodyLarge,
             color = Color.Blue,
             modifier = modifier
@@ -86,7 +85,7 @@ fun DetailScreen(
         Spacer(modifier = modifier.height(16.dp))
         Button(
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, state.sake.website.toUri())
+                val intent = Intent(Intent.ACTION_VIEW, state.sake?.website?.toUri())
                 context.startActivity(intent)
             },
             modifier = modifier.fillMaxWidth()

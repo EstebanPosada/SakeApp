@@ -17,6 +17,7 @@ serialization = "1.9.23"
 coil = "2.4.0"
 mockk = "1.13.10"
 truth = "1.4.2"
+coroutinesTest = "1.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +45,7 @@ hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testi
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
