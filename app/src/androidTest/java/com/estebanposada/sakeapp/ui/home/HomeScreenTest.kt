@@ -2,6 +2,7 @@ package com.estebanposada.sakeapp.ui.home
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import com.estebanposada.sakeapp.di.TestAppModule
 import com.estebanposada.sakeapp.domain.model.sakes
@@ -32,7 +33,7 @@ class HomeScreenUiTest {
         val items = sakes
         composeRule.setContent {
             HomeScreen(
-                state = HomeState(items = items),
+                state = HomeState(items = items, isLoading = false),
                 onItemClick = {}
             )
         }
@@ -49,5 +50,13 @@ class HomeScreenUiTest {
             )
         }
         composeRule.onNodeWithText("No items found").assertIsDisplayed()
+    }
+
+    @Test
+    fun homeScreen_showsLoadingState() {
+        composeRule.setContent {
+            HomeScreen(state = HomeState(isLoading = true), onItemClick = {})
+        }
+        composeRule.onNodeWithContentDescription("Loading").assertIsDisplayed()
     }
 }

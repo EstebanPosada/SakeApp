@@ -21,9 +21,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getItems() {
+        _state.value = _state.value.copy(isLoading = true)
         viewModelScope.launch {
             getSakeItemsUseCase().collect { sakeItems ->
-                _state.value = _state.value.copy(items = sakeItems)
+                _state.value = _state.value.copy(items = sakeItems, isLoading = false)
             }
         }
     }

@@ -23,6 +23,7 @@ class DetailViewModel @Inject constructor(
     init {
         savedStateHandle.get<Int>(Constants.ID)?.let { sakeId ->
             if (sakeId != Constants.NO_ID) {
+                _state.value = state.value.copy(isLoading = true)
                 viewModelScope.launch {
                     getSakeById(sakeId)
                 }
@@ -33,13 +34,12 @@ class DetailViewModel @Inject constructor(
     private suspend fun getSakeById(id: Int) {
         when (val result = getSakeByIdUseCase(id)) {
             is Result.Success -> {
-                _state.value = state.value.copy(sake = result.data.toUiModel())
+                _state.value = state.value.copy(sake = result.data.toUiModel(), isLoading = false)
             }
 
             is Result.Failure -> {
-                _state.value = state.value.copy(
-                    error = result.error.toDetailError()
-                )
+                _state.value =
+                    state.value.copy(error = result.error.toDetailError(), isLoading = false)
             }
         }
     }

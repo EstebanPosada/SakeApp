@@ -3,6 +3,7 @@ package com.estebanposada.sakeapp.ui.detail
 data class DetailState(
     val sake: SakeUiModel? = null,
     val error: DetailError? = null,
+    val isLoading: Boolean = true
 )
 
 sealed class DetailError {
