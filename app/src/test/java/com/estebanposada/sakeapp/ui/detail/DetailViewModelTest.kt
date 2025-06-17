@@ -1,13 +1,15 @@
 package com.estebanposada.sakeapp.ui.detail
 
 import androidx.lifecycle.SavedStateHandle
+import com.estebanposada.sakeapp.domain.model.DataError
+import com.estebanposada.sakeapp.domain.model.Result
 import com.estebanposada.sakeapp.domain.model.sakes
 import com.estebanposada.sakeapp.domain.use_case.GetSakeByIdUseCase
-import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -37,7 +39,7 @@ class DetailViewModelTest {
 
     @Test
     fun `test initial state is empty`() {
-        val savedStateHandle = mockk<SavedStateHandle>(){
+        val savedStateHandle = mockk<SavedStateHandle>() {
             every { get<Int>("id") } returns -1
         }
         viewModel = DetailViewModel(getSakeByIdUseCase, savedStateHandle)
@@ -53,13 +55,26 @@ class DetailViewModelTest {
         }
 
         // When
-        coEvery { sake.id?.let { getSakeByIdUseCase(it) } } returns sake
+        coEvery { sake.id?.let { getSakeByIdUseCase(it) } } returns Result.Success(sake)
 
         viewModel = DetailViewModel(getSakeByIdUseCase, savedStateHandle)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        assertThat(viewModel.state.value.sake).isEqualTo(sake)
+        assertThat(viewModel.state.value.sake).isEqualTo(sake.toUiModel())
+    }
+
+    @Test
+    fun `setError should update error in state with CustomMessage`() {
+        val savedStateHandle = mockk<SavedStateHandle> {
+            every { get<Int>("id") } returns null
+        }
+        viewModel = DetailViewModel(getSakeByIdUseCase, savedStateHandle)
+
+        val error = DetailError.CustomMessage("Error")
+        viewModel.setError(error)
+
+        assertThat(viewModel.state.value.error).isEqualTo(error)
     }
 
     @Test
@@ -71,7 +86,7 @@ class DetailViewModelTest {
         }
 
         // When
-        coEvery  { sake.id?.let { getSakeByIdUseCase(it) } }  returns null
+        coEvery { sake.id?.let { getSakeByIdUseCase(it) } } returns Result.Failure(DataError.NetworkError)
 
         viewModel = DetailViewModel(getSakeByIdUseCase, savedStateHandle)
         testDispatcher.scheduler.advanceUntilIdle()
@@ -97,10 +112,10 @@ class DetailViewModelTest {
         }
         viewModel = DetailViewModel(getSakeByIdUseCase, savedStateHandle)
 
-        val errorMessage = "Error"
-        viewModel.setError(errorMessage)
+        val error = DetailError.CustomMessage("Error")
+        viewModel.setError(error)
 
-        assertThat(viewModel.state.value.error).isEqualTo(errorMessage)
+        assertThat(viewModel.state.value.error).isEqualTo(error)
     }
 
     @Test
@@ -110,9 +125,11 @@ class DetailViewModelTest {
         }
         viewModel = DetailViewModel(getSakeByIdUseCase, savedStateHandle)
 
-        viewModel.setError("First")
-        viewModel.setError("Second")
+        val firstError = DetailError.CustomMessage("First")
+        val secondError = DetailError.CustomMessage("Second")
+        viewModel.setError(firstError)
+        viewModel.setError(secondError)
 
-        assertThat(viewModel.state.value.error).isEqualTo("Second")
+        assertThat(viewModel.state.value.error).isEqualTo(secondError)
     }
 }

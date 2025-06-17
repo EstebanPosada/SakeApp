@@ -9,4 +9,6 @@
     <string name="sake_image_description">Sake image</string>
     <string name="star_rating_description">Star Rating</string>
     <string name="error_loading_image">Error loading image</string>
+    <string name="network_error">Network error occurred</string>
+    <string name="not_found">Not found</string>
 </resources>

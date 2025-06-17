@@ -1,5 +1,7 @@
 package com.estebanposada.sakeapp.domain.use_case
 
+import com.estebanposada.sakeapp.domain.model.DataError
+import com.estebanposada.sakeapp.domain.model.Result
 import com.estebanposada.sakeapp.domain.model.sakes
 import com.estebanposada.sakeapp.domain.repository.SakeRepository
 import com.google.common.truth.Truth.assertThat
@@ -30,6 +32,35 @@ class GetSakeByIdUseCaseTest {
         val result = getSakeByIdUseCase(id)
 
         // Then
-        assertThat(result).isEqualTo(someSake)
+        assertThat(result).isEqualTo(Result.Success(someSake))
+    }
+
+    @Test
+    fun `When getSakeById returns null, then return Failure NotFound`() = runBlocking {
+        // Given
+        val id = 99
+        coEvery { repository.getSakeById(id) } returns null
+
+        // When
+        val result = getSakeByIdUseCase(id)
+
+        // Then
+        assertThat(result).isEqualTo(Result.Failure(DataError.NotFound))
+    }
+
+    @Test
+    fun `When getSakeById throws exception, then return Failure UnknownError`() = runBlocking {
+        // Given
+        val id = 1
+        val errorMessage = "DB error"
+        coEvery { repository.getSakeById(id) } throws RuntimeException(errorMessage)
+
+        // When
+        val result = getSakeByIdUseCase(id)
+
+        // Then
+        assertThat(result).isEqualTo(
+            Result.Failure(DataError.UnknownError(errorMessage))
+        )
     }
 }

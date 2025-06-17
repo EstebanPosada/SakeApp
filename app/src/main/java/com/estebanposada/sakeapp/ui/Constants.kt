@@ -5,4 +5,5 @@ object Constants {
     const val ID = "id"
     const val ID_PARAM = "/{id}"
     const val NO_ID = -1
+    const val UNKNOWN_ERROR = "Unknown error"
 }

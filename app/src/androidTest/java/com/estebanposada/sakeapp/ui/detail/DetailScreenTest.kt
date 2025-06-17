@@ -31,7 +31,7 @@ class DetailScreenTest {
     fun detailScreen_showsSakeDetails() {
         val sake = sakes.first()
         composeRule.setContent {
-            DetailScreen(state = DetailState(sake))
+            DetailScreen(state = DetailState(sake.toUiModel()))
         }
         composeRule.onNodeWithText("Sake 1").assertIsDisplayed()
         composeRule.onNodeWithText("Description of Sake 1").assertIsDisplayed()

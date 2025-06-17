@@ -125,7 +125,7 @@ fun Navigation(modifier: Modifier = Modifier) {
                                 context.startActivity(intent)
                             }
 
-                            is DetailEvent.ShowError -> viewModel.setError(event.message)
+                            is DetailEvent.ShowError -> viewModel.setError(event.error)
                         }
                     },
                 )

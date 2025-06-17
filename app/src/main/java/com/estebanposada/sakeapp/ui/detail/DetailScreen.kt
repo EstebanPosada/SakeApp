@@ -33,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.estebanposada.sakeapp.R
-import com.estebanposada.sakeapp.domain.model.Sake
 import com.estebanposada.sakeapp.ui.Constants
 import com.estebanposada.sakeapp.ui.detail.components.RatingStars
 
@@ -45,16 +44,17 @@ fun DetailScreen(
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val addressError = stringResource(R.string.coordinates_or_address_not_available)
-    val websiteError = stringResource(R.string.website_is_not_available)
-    val imageError = stringResource(R.string.error_loading_image)
+    val errorMessage = when (state.error) {
+        is DetailError.Custom -> stringResource(id = state.error.messageResId)
+        is DetailError.CustomMessage -> state.error.message
+        DetailError.AddressUnavailable -> stringResource(R.string.coordinates_or_address_not_available)
+        DetailError.WebsiteUnavailable -> stringResource(R.string.website_is_not_available)
+        else -> Constants.EMPTY
+    }
 
     LaunchedEffect(state.error) {
-        state.error?.let { errorMessage ->
-            snackBarHostState.showSnackbar(
-                message = errorMessage,
-            )
-        }
+        state.error != null && errorMessage.isNotBlank()
+        snackBarHostState.showSnackbar(message = errorMessage)
     }
     Box(modifier = modifier.fillMaxSize()) {
         Column(
@@ -65,9 +65,11 @@ fun DetailScreen(
         ) {
             Image(
                 painter = rememberAsyncImagePainter(
-                    model = state.sake?.picture,
+                    model = state.sake?.imageUrl,
                     onError = { error ->
-                        onEvent(DetailEvent.ShowError((imageError)))
+                        onEvent(
+                            DetailEvent.ShowError((DetailError.Custom(R.string.error_loading_image)))
+                        )
                         Log.e("Coil", "Error loading image: ${error.result.throwable.message}")
                     }),
                 contentDescription = stringResource(R.string.sake_image_description),
@@ -101,16 +103,16 @@ fun DetailScreen(
                     .clickable {
                         val coordinates = state.sake?.coordinates
                         val address = state.sake?.address
-                        if (coordinates != null && coordinates.size == 2 && !address.isNullOrBlank()) {
+                        if (coordinates != null && !address.isNullOrBlank()) {
                             onEvent(
                                 DetailEvent.OpenMap(
-                                    coordinates[0],
-                                    coordinates[1],
+                                    coordinates.first,
+                                    coordinates.second,
                                     address
                                 )
                             )
                         } else {
-                            onEvent(DetailEvent.ShowError(addressError))
+                            onEvent(DetailEvent.ShowError(DetailError.AddressUnavailable))
                         }
                     }
                     .padding(16.dp)
@@ -121,7 +123,7 @@ fun DetailScreen(
                     state.sake?.website?.let {
                         onEvent(DetailEvent.OpenWebsite(it))
                     } ?: run {
-                        onEvent(DetailEvent.ShowError(websiteError))
+                        onEvent(DetailEvent.ShowError(DetailError.WebsiteUnavailable))
                     }
                 },
                 modifier = modifier.fillMaxWidth()
@@ -141,18 +143,16 @@ fun DetailScreen(
 private fun DetailPreview() {
     DetailScreen(
         state = DetailState(
-            Sake(
+            SakeUiModel(
                 name = "Sake name",
                 description = "This is a description for sake",
                 id = 1,
-                picture = "picture",
+                imageUrl = "picture",
                 rating = 3.5f,
                 address = "123 Sake St, Tokyo, Japan",
-                coordinates = listOf(),
-                google_maps_link = "maps link",
+                coordinates = Pair(1.0, 1.0),
                 website = "website",
             ),
-            error = "Test Error"
         )
     )
 }
