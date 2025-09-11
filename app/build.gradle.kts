@@ -69,6 +69,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt)

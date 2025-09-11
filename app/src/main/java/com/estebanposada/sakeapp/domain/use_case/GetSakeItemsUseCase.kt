@@ -5,5 +5,5 @@ import com.estebanposada.sakeapp.domain.repository.SakeRepository
 class GetSakeItemsUseCase(
     private val repository: SakeRepository
 ) {
-    operator fun invoke() = repository.getSakeItems()
+    suspend operator fun invoke() = repository.getMockSakeItems()
 }
