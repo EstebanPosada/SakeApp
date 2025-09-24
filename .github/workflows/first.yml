@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   unit-test:
-    name: Unit tests and Lint
+    #name: Unit tests and Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
