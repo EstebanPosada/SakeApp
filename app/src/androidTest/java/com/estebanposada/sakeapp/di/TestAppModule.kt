@@ -8,6 +8,7 @@ import com.estebanposada.sakeapp.data.repository.SakeRepositoryImpl
 import com.estebanposada.sakeapp.domain.repository.SakeRepository
 import com.estebanposada.sakeapp.domain.use_case.GetSakeByIdUseCase
 import com.estebanposada.sakeapp.domain.use_case.GetSakeItemsUseCase
+import com.estebanposada.sakeapp.mock.SakeApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,5 +45,6 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideSakeRepository(dao: SakeDao): SakeRepository = SakeRepositoryImpl(dao)
+    fun provideSakeRepository(dao: SakeDao, api: SakeApiService): SakeRepository =
+        SakeRepositoryImpl(dao, api)
 }

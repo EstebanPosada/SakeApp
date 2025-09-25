@@ -29,15 +29,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
-
-      - name: Grant execute permissions for gradlew
-        run: chmod +x gradlew
+#      - name: Set up JDK 17
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: temurin
+#          java-version: 17
+#          cache: gradle
+#
+#      - name: Grant execute permissions for gradlew
+#        run: chmod +x gradlew
 
       - name: Unit tests
         run: ./gradlew clean testDebugUnitTest
@@ -52,29 +52,23 @@ jobs:
             name: unit-test-report
             path: app/build/reports/tests/testDebugUnitTest/
 
-#  android-test-job:
-#    name: Android Tests
-#    runs-on: macos-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#      - name: Set up JDK 17
-#        uses: actions/setup-java@v4
-#        with:
-#          distribution: temurin
-#          java-version: 17
-#          cache: gradle
-#      - name: Grant execute permissions for gradlew
-#        run: chmod +x gradlew
-#      - name: Instrumentation Tests
-#        uses: reactivecircus/android-emulator-runner@v2.21.0
-#        with:
-#            api-level: 33
-#            script: ./gradlew connectedDebugAndroidTest
-#      - name: Upload Android Test Report
-#        if: ${{ always() }}
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: android-test-report
-#          path: '**/build/reports/androidTests/'
+  instrumentation-test:
+    needs: [unit-test]
+    name: Instrumentation Tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Run Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+#          script: ./gradlew connectedDebugAndroidTest
+          script: ./gradlew connectedCheck
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        with:
+            name: instrumentation-test-report
+            path: app/build/reports/androidTests/connected/

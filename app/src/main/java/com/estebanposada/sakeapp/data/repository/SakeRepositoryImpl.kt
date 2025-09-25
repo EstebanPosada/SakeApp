@@ -12,9 +12,11 @@ class SakeRepositoryImpl(private val dao: SakeDao, private val api: SakeApiServi
     SakeRepository {
     override fun getSakeItems(): Flow<List<Sake>> = dao.getAllSakeItems()
 
-    override suspend fun getMockSakeItems(): Flow<List<Sake>> = flow {
+    override suspend fun getMockSakeItems(): Flow<List<Sake>> {
         val response = api.getMockSakeList().map { it.toDomainSake() }
-        emit(response)
+        dao.insertAll(response)
+        val data = dao.getAllSakeItems()
+        return data
     }
 
     override suspend fun getSakeById(id: Int): Sake? = dao.getSakeById(id)
