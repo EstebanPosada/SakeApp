@@ -2,6 +2,7 @@ package com.estebanposada.sakeapp.data.repository
 
 import com.estebanposada.sakeapp.data.data_source.SakeDao
 import com.estebanposada.sakeapp.domain.model.sakes
+import com.estebanposada.sakeapp.mock.SakeApiService
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -14,11 +15,13 @@ import org.junit.Test
 class SakeRepositoryImplTest {
     private lateinit var repository: SakeRepositoryImpl
     private lateinit var dao: SakeDao
+    private lateinit var api: SakeApiService
 
     @Before
     fun setUp() {
         dao = mockk()
-        repository = SakeRepositoryImpl(dao)
+        api = mockk()
+        repository = SakeRepositoryImpl(dao, api)
     }
 
     @Test
