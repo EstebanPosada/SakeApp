@@ -98,3 +98,18 @@ jobs:
         with:
             name: instrumentation-test-report
             path: app/build/reports/androidTests/connected/
+
+  static-code-analysis:
+    needs: [unit-test]
+    name: Static Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run SonarQube Analysis
+        run: ./gradlew app:sonarqube -Dsonar.login=$SONAR_TOKEN
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#        run: ./gradlew sonarqube -Dsonar.projectKey=your_project_key -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN

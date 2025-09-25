@@ -84,3 +84,11 @@ dependencies {
     kspTest(libs.hilt.compiler)
     testImplementation(libs.truth)
 }
+
+//sonarqube {
+//    properties {
+//        property("sonar.projectKey", "TuProjectKey")
+//        property("sonar.host.url", "http://localhost:9000")
+//        property("sonar.login", "TuToken")
+//    }
+//}
