@@ -15,7 +15,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -24,7 +23,7 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(app: Application, dataProvider: Provider<SakeDao>) =
+    fun provideDatabase(app: Application) =
         Room.inMemoryDatabaseBuilder(app, SakeDatabase::class.java).build()
 
     @Provides

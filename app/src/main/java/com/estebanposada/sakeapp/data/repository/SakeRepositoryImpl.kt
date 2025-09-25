@@ -6,7 +6,6 @@ import com.estebanposada.sakeapp.domain.repository.SakeRepository
 import com.estebanposada.sakeapp.mock.SakeApiService
 import com.estebanposada.sakeapp.mock.toDomainSake
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class SakeRepositoryImpl(private val dao: SakeDao, private val api: SakeApiService) :
     SakeRepository {
