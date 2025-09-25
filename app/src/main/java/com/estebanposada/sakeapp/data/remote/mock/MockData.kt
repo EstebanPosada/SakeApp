@@ -1,4 +1,4 @@
-package com.estebanposada.sakeapp.mock
+package com.estebanposada.sakeapp.data.remote.mock
 
 import com.estebanposada.sakeapp.domain.model.Sake as DomainSake
 
@@ -124,15 +124,4 @@ val mockSakeList = listOf(
         mapLink = "https://maps.app.goo.gl/GQrMNVo6YoVEvCPU6",
         website = "https://hokuan.co.jp/"
     )
-)
-
-fun Sake.toDomainSake() = DomainSake(
-    name = name,
-    description = description,
-    picture = picture,
-    rating = rating.toFloat(),
-    address = address,
-    coordinates = coordinates,
-    google_maps_link = mapLink,
-    website = website
 )
