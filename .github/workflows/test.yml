@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 jobs:
   unit-test:
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -49,7 +50,7 @@ jobs:
             script: ./gradlew connectedDebugAndroidTest
       - name: Upload Android Test Report
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: android-test-report
           path: '**/build/reports/androidTests/'
