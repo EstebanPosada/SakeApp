@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -26,30 +27,21 @@ import com.estebanposada.sakeapp.domain.model.sakes
 
 @Composable
 fun HomeScreen(
-    state: HomeState,
+    state: MainState,
     modifier: Modifier = Modifier,
     onItemClick: (Int) -> Unit
 ) {
     val loadingDescription = stringResource(R.string.loading)
 
-    when {
-        state.isLoading ->
+    when (state) {
+        is MainState.Loading ->
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(modifier = modifier.semantics {
-                    contentDescription = loadingDescription
-                })
+                CircularProgressIndicator(modifier = Modifier.size(100.dp))
             }
 
-        state.items.isEmpty() -> {
-            Text(
-                modifier = modifier.padding(16.dp),
-                text = stringResource(R.string.no_items_found)
-            )
-        }
-
-        else ->
+        is MainState.LoadedSakes ->
             LazyColumn(modifier = modifier) {
-                items(state.items) { item ->
+                items(sakes) { item ->
                     Card(
                         modifier = modifier
                             .fillMaxWidth()
@@ -68,6 +60,13 @@ fun HomeScreen(
                     }
                 }
             }
+
+        is MainState.Error -> Text(
+            modifier = modifier.padding(16.dp),
+            text = stringResource(R.string.no_items_found)
+        )
+
+        MainState.Idle -> TODO()
     }
 }
 
@@ -75,9 +74,7 @@ fun HomeScreen(
 @Composable
 private fun HomePreview() {
     HomeScreen(
-        state = HomeState(
-            items = sakes
-        ),
+        state = MainState.Loading,
         onItemClick = {}
     )
 }
@@ -86,7 +83,16 @@ private fun HomePreview() {
 @Composable
 private fun HomePreviewEmpty() {
     HomeScreen(
-        state = HomeState(),
+        state = MainState.LoadedSakes(sakes),
+        onItemClick = {}
+    )
+}
+
+@Preview
+@Composable
+private fun HomePreviewError() {
+    HomeScreen(
+        state = MainState.Error("Error"),
         onItemClick = {}
     )
 }

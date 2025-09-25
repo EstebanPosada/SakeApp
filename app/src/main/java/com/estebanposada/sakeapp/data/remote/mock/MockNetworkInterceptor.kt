@@ -1,5 +1,7 @@
-package com.estebanposada.sakeapp.mock
+package com.estebanposada.sakeapp.data.remote.mock
 
+import com.estebanposada.sakeapp.domain.util.Resource
+import com.google.gson.Gson
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Protocol
@@ -10,6 +12,7 @@ import kotlin.random.Random
 
 class MockNetworkInterceptor : Interceptor {
     private val mockResponses = mutableListOf<MockResponse>()
+    private val gson = Gson()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -57,13 +60,15 @@ class MockNetworkInterceptor : Interceptor {
     }
 
     private fun createErrorResponse(request: Request, errorBody: String = "Error"): Response {
+        val resourceError = Resource.Error<Any>(errorBody)
+        val json = gson.toJson(resourceError)
         return Response.Builder()
             .code(500)
             .request(request)
             .protocol(Protocol.HTTP_1_1)
             .message("Internal Server Error: $errorBody")
             .body(
-                errorBody.toResponseBody("text/plain".toMediaType())
+                json.toResponseBody("text/plain".toMediaType())
             )
             .build()
     }
@@ -72,6 +77,9 @@ class MockNetworkInterceptor : Interceptor {
         mockResponse: MockResponse,
         request: Request
     ): Response {
+        val data = mockResponse.body.invoke()
+        val resourceSuccess = Resource.Success(data)
+        val json = gson.toJson(resourceSuccess)
         return Response.Builder()
             .code(mockResponse.status)
             .request(request)

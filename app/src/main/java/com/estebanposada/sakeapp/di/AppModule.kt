@@ -5,14 +5,17 @@ import androidx.room.Room
 import com.estebanposada.sakeapp.data.data_source.SakeDao
 import com.estebanposada.sakeapp.data.data_source.SakeDatabase
 import com.estebanposada.sakeapp.data.data_source.SakeDatabaseCallback
+import com.estebanposada.sakeapp.data.remote.SakeApiService
+import com.estebanposada.sakeapp.data.remote.mock.MockNetworkInterceptor
+import com.estebanposada.sakeapp.data.remote.mock.mockSakeList
 import com.estebanposada.sakeapp.data.repository.SakeRepositoryImpl
 import com.estebanposada.sakeapp.domain.repository.SakeRepository
 import com.estebanposada.sakeapp.domain.use_case.GetSakeByIdUseCase
 import com.estebanposada.sakeapp.domain.use_case.GetSakeItemsUseCase
-import com.estebanposada.sakeapp.mock.MockNetworkInterceptor
-import com.estebanposada.sakeapp.mock.SakeApiService
-import com.estebanposada.sakeapp.mock.mockSakeList
+import com.estebanposada.sakeapp.domain.util.Resource
+import com.estebanposada.sakeapp.domain.util.ResourceTypeAdapter
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,7 +56,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSakeRepository(dao: SakeDao, api: SakeApiService): SakeRepository = SakeRepositoryImpl(dao, api)
+    fun provideSakeRepository(dao: SakeDao, api: SakeApiService): SakeRepository =
+        SakeRepositoryImpl(dao, api)
 
     @Provides
     @Singleton
@@ -70,9 +74,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
+    fun provideGson(): Gson =
+        GsonBuilder().registerTypeAdapter(Resource::class.java, ResourceTypeAdapter<Any>()).create()
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit =
         Retrofit.Builder().baseUrl("http://localhost/").client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create()).build()
+            .addConverterFactory(GsonConverterFactory.create(gson)).build()
 
     @Provides
     @Singleton
