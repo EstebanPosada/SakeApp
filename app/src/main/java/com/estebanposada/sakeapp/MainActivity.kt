@@ -113,14 +113,12 @@ fun Navigation(modifier: Modifier = Modifier) {
                             }
 
                             is DetailEvent.OpenMap -> {
-                                val uri = Uri.parse(
-                                    context.getString(
-                                        R.string.geo_coordinates_address,
-                                        event.latitude,
-                                        event.longitude,
-                                        Uri.encode(event.address)
-                                    )
-                                )
+                                val uri = context.getString(
+                                    R.string.geo_coordinates_address,
+                                    event.latitude,
+                                    event.longitude,
+                                    Uri.encode(event.address)
+                                ).toUri()
                                 val intent = Intent(Intent.ACTION_VIEW, uri)
                                 context.startActivity(intent)
                             }
