@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SakeApp</string>
     <string name="visit_website">Visit Website</string>
-    <string name="geo_coordinates_address">geo:%1$s,%2$s?q=%3$s</string>
+    <string name="geo_coordinates_address">geo:%1$f,%2$f?q=%3$s</string>
     <string name="back_description">Back</string>
     <string name="no_items_found">No items found</string>
     <string name="website_is_not_available">Website is not available</string>

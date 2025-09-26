@@ -8,13 +8,13 @@ import com.estebanposada.sakeapp.data.repository.SakeRepositoryImpl
 import com.estebanposada.sakeapp.domain.repository.SakeRepository
 import com.estebanposada.sakeapp.domain.use_case.GetSakeByIdUseCase
 import com.estebanposada.sakeapp.domain.use_case.GetSakeItemsUseCase
+import com.estebanposada.sakeapp.mock.SakeApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -23,7 +23,7 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(app: Application, dataProvider: Provider<SakeDao>) =
+    fun provideDatabase(app: Application) =
         Room.inMemoryDatabaseBuilder(app, SakeDatabase::class.java).build()
 
     @Provides
@@ -44,5 +44,6 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideSakeRepository(dao: SakeDao): SakeRepository = SakeRepositoryImpl(dao)
+    fun provideSakeRepository(dao: SakeDao, api: SakeApiService): SakeRepository =
+        SakeRepositoryImpl(dao, api)
 }
