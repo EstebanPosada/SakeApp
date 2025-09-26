@@ -8,15 +8,13 @@ plugins {
     alias(libs.plugins.sonarqube)
 }
 
-//sonarqube {
-//    properties {
-//        property("sonar.projectKey", "EstebanPosada_SakeApp")
-//        property("sonar.organization", "estebanposada")
-//        property("sonar.host.url", "https://sonarcloud.io")
-//        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
-//
-//    }
-//}
+sonar {
+    properties {
+        property("sonar.projectKey", "EstebanPosada_SakeApp")
+        property("sonar.organization", "estebanposada")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
 
 android {
     namespace = "com.estebanposada.sakeapp"
@@ -34,7 +32,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -65,15 +63,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.gson)
     implementation(libs.coil)
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 
     // Room
     implementation(libs.androidx.room.runtime)
@@ -89,17 +78,21 @@ dependencies {
     implementation(libs.androidx.hilt)
     ksp(libs.hilt.compiler)
 
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.coroutines.test)
     testImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.compiler)
     testImplementation(libs.truth)
-}
 
-//sonarqube {
-//    properties {
-//        property("sonar.projectKey", "TuProjectKey")
-//        property("sonar.host.url", "http://localhost:9000")
-//        property("sonar.login", "TuToken")
-//    }
-//}
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
+    kspAndroidTest(libs.hilt.compiler)
+    kspTest(libs.hilt.compiler)
+}

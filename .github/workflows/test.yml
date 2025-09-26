@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [29, 30, 31, 32, 33]
+        api-level: [29]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -113,6 +113,6 @@ jobs:
           fetch-depth: 0
 
       - name: Run SonarQube Analysis
-        run: ./gradlew sonar -Dsonar.projectKey=EstebanPosada_SakeApp -Dsonar.organization=estebanposada -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonar -Dsonar.projectKey=EstebanPosada_SakeApp -Dsonar.organization=estebanposada -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SONAR_TOKEN }}
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
