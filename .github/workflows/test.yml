@@ -43,7 +43,7 @@ jobs:
             path: app/build/reports/tests/testDebugUnitTest/
 
   instrumentation-test:
-#    needs: [unit-test]
+    needs: [lint]
     name: Instrumentation Tests
     runs-on: ubuntu-latest
     strategy:
@@ -71,16 +71,6 @@ jobs:
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}
 
-#      - name: create AVD and generate snapshot for caching
-#        if: steps.avd-cache.outputs.cache-hit != 'true'
-#        uses: reactivecircus/android-emulator-runner@v2
-#        with:
-#          api-level: ${{ matrix.api-level }}
-#          force-avd-creation: false
-#          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-#          disable-animations: false
-#          script: echo "Generated AVD snapshot for caching."
-
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -90,12 +80,6 @@ jobs:
           disable-animations: true
           script: ./gradlew connectedCheck
 
-#      - name: Run Instrumentation Tests
-#        uses: reactivecircus/android-emulator-runner@v2
-#        with:
-#          api-level: 29
-#          script: ./gradlew connectedCheck
-
       - name: Upload test report
         uses: actions/upload-artifact@v4
         with:
@@ -103,7 +87,7 @@ jobs:
             path: app/build/reports/androidTests/connected/
 
   static-code-analysis:
-#    needs: [unit-test]
+    needs: [unit-test]
     name: Static Code Analysis
     runs-on: ubuntu-latest
     steps:
@@ -116,3 +100,18 @@ jobs:
         run: ./gradlew sonar -Dsonar.projectKey=EstebanPosada_SakeApp -Dsonar.organization=estebanposada -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SONAR_TOKEN }}
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  package:
+    name: Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Package
+        run: ./gradlew clean assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug.apk
