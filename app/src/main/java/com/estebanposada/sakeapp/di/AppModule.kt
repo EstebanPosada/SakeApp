@@ -53,7 +53,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSakeRepository(dao: SakeDao, api: SakeApiService): SakeRepository = SakeRepositoryImpl(dao, api)
+    fun provideSakeRepository(dao: SakeDao, api: SakeApiService): SakeRepository =
+        SakeRepositoryImpl(dao, api)
 
     @Provides
     @Singleton

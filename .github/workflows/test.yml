@@ -43,9 +43,12 @@ jobs:
             path: app/build/reports/tests/testDebugUnitTest/
 
   instrumentation-test:
-    needs: [unit-test]
+#    needs: [unit-test]
     name: Instrumentation Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        api-level: [29, 30, 31, 32, 33]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -68,15 +71,15 @@ jobs:
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}
 
-      - name: create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
-          script: echo "Generated AVD snapshot for caching."
+#      - name: create AVD and generate snapshot for caching
+#        if: steps.avd-cache.outputs.cache-hit != 'true'
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          api-level: ${{ matrix.api-level }}
+#          force-avd-creation: false
+#          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+#          disable-animations: false
+#          script: echo "Generated AVD snapshot for caching."
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -100,16 +103,16 @@ jobs:
             path: app/build/reports/androidTests/connected/
 
   static-code-analysis:
-    needs: [unit-test]
+#    needs: [unit-test]
     name: Static Code Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Run SonarQube Analysis
-        run: ./gradlew app:sonarqube -Dsonar.login=$SONAR_TOKEN
+        run: ./gradlew sonar -Dsonar.projectKey=EstebanPosada_SakeApp -Dsonar.organization=estebanposada -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        run: ./gradlew sonarqube -Dsonar.projectKey=your_project_key -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

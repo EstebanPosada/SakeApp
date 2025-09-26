@@ -5,7 +5,18 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.sonarqube)
 }
+
+//sonarqube {
+//    properties {
+//        property("sonar.projectKey", "EstebanPosada_SakeApp")
+//        property("sonar.organization", "estebanposada")
+//        property("sonar.host.url", "https://sonarcloud.io")
+//        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+//
+//    }
+//}
 
 android {
     namespace = "com.estebanposada.sakeapp"
