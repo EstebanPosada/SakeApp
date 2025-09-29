@@ -27,7 +27,7 @@ class GetSakeItemsUseCaseTest {
         val someSakes = sakes
 
         // When
-        coEvery { repository.getSakeItems() } returns listOf(someSakes).asFlow()
+        coEvery { repository.getMockSakeItems() } returns listOf(someSakes).asFlow()
         val result = getSakeItemsUseCase().first()
 
         // Then

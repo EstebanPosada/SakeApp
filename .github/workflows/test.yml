@@ -1,0 +1,118 @@
+name: Test Project
+
+on:
+  push:
+    branches: [ "main", "gh-actions" ]
+  workflow_dispatch:
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Lint
+        run: ./gradlew lintDebug
+
+      - name: Upload lint report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint.html
+          path: app/build/reports/lint-results-debug.html
+
+  unit-test:
+    needs: [lint]
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Unit tests
+        run: ./gradlew clean testDebugUnitTest
+
+      - name: Android Test Report
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }}
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        with:
+            name: unit-test-report
+            path: app/build/reports/tests/testDebugUnitTest/
+
+  instrumentation-test:
+    needs: [lint]
+    name: Instrumentation Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        api-level: [29]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.api-level }}
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: ./gradlew connectedCheck
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        with:
+            name: instrumentation-test-report
+            path: app/build/reports/androidTests/connected/
+
+  static-code-analysis:
+    needs: [unit-test]
+    name: Static Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run SonarQube Analysis
+        run: ./gradlew sonar -Dsonar.projectKey=EstebanPosada_SakeApp -Dsonar.organization=estebanposada -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Package
+        run: ./gradlew clean assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug.apk
+          path: app/build/outputs/apk/debug/
