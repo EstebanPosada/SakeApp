@@ -4,12 +4,11 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.estebanposada.sakeapp.domain.model.Sake
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SakeDao {
     @Query("SELECT * FROM Sake")
-    fun getAllSakeItems(): Flow<List<Sake>>
+    fun getAllSakeItems(): List<Sake>
 
     @Query("SELECT * FROM Sake WHERE id = :id")
     suspend fun getSakeById(id: Int): Sake?

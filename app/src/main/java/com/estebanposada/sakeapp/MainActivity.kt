@@ -18,6 +18,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -38,6 +39,8 @@ import com.estebanposada.sakeapp.ui.detail.DetailScreen
 import com.estebanposada.sakeapp.ui.detail.DetailViewModel
 import com.estebanposada.sakeapp.ui.home.HomeScreen
 import com.estebanposada.sakeapp.ui.home.HomeViewModel
+import com.estebanposada.sakeapp.ui.home.MainEffect
+import com.estebanposada.sakeapp.ui.home.MainIntent
 import com.estebanposada.sakeapp.ui.theme.SakeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -89,10 +92,17 @@ fun Navigation(modifier: Modifier = Modifier) {
         ) {
             composable(Screen.HomeScreen.route) {
                 val viewModel: HomeViewModel = hiltViewModel()
+                when (val effect = viewModel.effect.collectAsState(initial = null).value) {
+                    is MainEffect.NavigateToDetail -> {
+                        navController.navigate(Screen.DetailScreen.route + "/${effect.sakeId}")
+                    }
+
+                    else -> Unit
+                }
                 HomeScreen(
                     modifier = modifier,
                     state = viewModel.state.value,
-                    onItemClick = { id -> navController.navigate(Screen.DetailScreen.route + "/$id") }
+                    onItemClick = { id -> viewModel.handleIntent(MainIntent.ItemClicked(id)) }
                 )
             }
             composable(
