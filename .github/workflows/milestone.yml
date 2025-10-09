@@ -1,7 +1,9 @@
 name: Enforce Milestone
 on:
   pull_request:
-    branches-ignore: ["master", "release/**"]
+    branches-ignore:
+      - master
+      - 'release/**'
     types: [opened, edited, reopened, synchronize, milestoned, demilestoned]
 jobs:
   check:
